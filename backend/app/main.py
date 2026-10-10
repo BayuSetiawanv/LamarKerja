@@ -1,34 +1,61 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.config import settings
-from app.core.data_loader import data_store
-from app.api.v1.router import api_v1_router  # <-- TAMBAHKAN INI
+from contextlib import asynccontextmanager
 import logging
 
-# Setup logging standar Senior Engineer
+from app.config import settings
+from app.core.data_loader import data_store
+from app.api.v1.router import api_v1_router
+
+# Setup logging standar
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
 
+# Lifespan event (Pengganti @app.on_event yang lebih modern dan stabil)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    logger.info(f"🚀 {settings.APP_NAME} is starting up...")
+    logger.info(f"🧠 Memuat referensi data ke memori...")
+    loaded_keys = data_store.get_all_keys()
+    logger.info(f"✅ Total {len(loaded_keys)} dataset berhasil dimuat: {loaded_keys}")
+    logger.info(f"📚 Swagger UI available at: /docs")
+    yield
+    # Shutdown
+    logger.info(f"👋 {settings.APP_NAME} is shutting down...")
+
+# Inisialisasi FastAPI
 app = FastAPI(
     title=settings.APP_NAME,
     description="AI-powered CV optimizer and cover letter generator.",
     version="1.0.0",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    lifespan=lifespan
 )
 
-# CORS Middleware
-# CORS Middleware
+# ==========================================
+# KONFIGURASI CORS FINAL (Paling Stabil)
+# ==========================================
+# Pastikan URL Vercel Anda ditulis TANPA slash (/) di akhir
+allowed_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://lamar-kerja-j7tb.vercel.app",
+    "https://lamarkerja-production.up.railway.app"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
 )
+# ==========================================
 
 # Include API v1 router
 app.include_router(api_v1_router)
@@ -43,7 +70,10 @@ async def root():
 
 @app.get("/health", tags=["Health"])
 async def health_check():
-    return {"status": "healthy", "environment": "development"}
+    return {
+        "status": "healthy", 
+        "environment": getattr(settings, "ENV", "production")
+    }
 
 @app.get("/debug/data", tags=["Debug"])
 async def debug_data():
@@ -52,15 +82,3 @@ async def debug_data():
         "skills_categories_count": len(data_store.get("skills_database", {}).get("categories", [])),
         "prompt_keys": list(data_store.get("prompt_templates", {}).get("prompts", {}).keys())
     }
-
-@app.on_event("startup")
-async def startup_event():
-    logger.info(f"🚀 {settings.APP_NAME} is starting up...")
-    logger.info(f"🧠 Memuat referensi data ke memori...")
-    loaded_keys = data_store.get_all_keys()
-    logger.info(f" Total {len(loaded_keys)} dataset berhasil dimuat: {loaded_keys}")
-    logger.info(f"📚 Swagger UI available at: http://localhost:8000/docs")
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    logger.info(f"👋 {settings.APP_NAME} is shutting down...")
