@@ -22,7 +22,7 @@ class DataLoader:
     def _load_all_data(self):
         # Asumsi folder 'data' berada di root proyek (D:\LamarKerja\data)
         # Kita naik 3 level dari file ini: core -> app -> backend -> root
-        base_dir = Path(__file__).resolve().parent.parent
+        base_dir = Path(__file__).resolve().parent.parent.parent
         data_dir = base_dir / "data"
         
         logger.info(f"📂 Mencari folder data di: {data_dir}")
