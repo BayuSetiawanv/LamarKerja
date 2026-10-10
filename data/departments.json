@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "departments": [
+    {
+      "dept_id": "it",
+      "name": "Information Technology"
+    }
+  ]
+}

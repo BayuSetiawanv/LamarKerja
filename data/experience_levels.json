@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "levels": [
+    {
+      "level_id": "entry",
+      "min_years": 0,
+      "max_years": 1
+    }
+  ]
+}

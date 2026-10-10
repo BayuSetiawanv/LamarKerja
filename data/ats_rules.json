@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "rules": [
+    {
+      "rule_id": "1",
+      "rule": "No tables or columns",
+      "severity": "critical",
+      "fix": "Gunakan satu kolom."
+    }
+  ]
+}

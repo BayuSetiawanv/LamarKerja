@@ -1,0 +1,177 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ==========================================
+   TEMA HANGAT LAMARKERJA.AI
+   Menggunakan oklch color space (modern)
+   ========================================== */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  
+  --shadow-warm: 0 10px 40px -10px rgba(245, 158, 11, 0.2);
+  --shadow-warm-lg: 0 20px 60px -15px rgba(245, 158, 11, 0.3);
+  --shadow-warm-xl: 0 30px 80px -20px rgba(249, 115, 22, 0.4);
+}
+
+/* ==========================================
+   ROOT VARIABLES (Light Mode - Warm)
+   ========================================== */
+:root {
+  --background: oklch(0.985 0.005 75);
+  --foreground: oklch(0.25 0.03 60);
+  --card: oklch(0.99 0.005 75);
+  --card-foreground: oklch(0.25 0.03 60);
+  --popover: oklch(0.99 0.005 75);
+  --popover-foreground: oklch(0.25 0.03 60);
+  --primary: oklch(0.75 0.18 55);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.94 0.02 75);
+  --secondary-foreground: oklch(0.35 0.04 60);
+  --muted: oklch(0.96 0.01 75);
+  --muted-foreground: oklch(0.55 0.02 60);
+  --accent: oklch(0.92 0.05 70);
+  --accent-foreground: oklch(0.35 0.06 55);
+  --destructive: oklch(0.65 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
+  --success: oklch(0.7 0.18 160);
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.8 0.15 80);
+  --warning-foreground: oklch(0.3 0.05 55);
+  --border: oklch(0.91 0.01 75);
+  --input: oklch(0.91 0.01 75);
+  --ring: oklch(0.75 0.18 55);
+  --radius: 0.625rem;
+}
+
+/* ==========================================
+   DARK MODE (Warm Dark - senada brand oranye)
+   ========================================== */
+.dark {
+  --background: oklch(0.19 0.02 60);
+  --foreground: oklch(0.95 0.01 75);
+  --card: oklch(0.23 0.02 60);
+  --card-foreground: oklch(0.95 0.01 75);
+  --popover: oklch(0.23 0.02 60);
+  --popover-foreground: oklch(0.95 0.01 75);
+  --primary: oklch(0.75 0.18 55);
+  --primary-foreground: oklch(0.15 0.02 60);
+  --secondary: oklch(0.27 0.02 60);
+  --secondary-foreground: oklch(0.92 0.01 75);
+  --muted: oklch(0.25 0.02 60);
+  --muted-foreground: oklch(0.7 0.02 75);
+  --accent: oklch(0.3 0.04 55);
+  --accent-foreground: oklch(0.95 0.02 70);
+  --destructive: oklch(0.7 0.22 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --success: oklch(0.72 0.18 160);
+  --success-foreground: oklch(0.15 0.02 60);
+  --warning: oklch(0.82 0.15 80);
+  --warning-foreground: oklch(0.15 0.02 60);
+  --border: oklch(0.32 0.02 60);
+  --input: oklch(0.32 0.02 60);
+  --ring: oklch(0.75 0.18 55);
+}
+
+/* ==========================================
+   GLOBAL STYLES
+   ========================================== */
+* {
+  @apply border-border;
+}
+
+body {
+  @apply bg-background text-foreground antialiased;
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ==========================================
+   CUSTOM SCROLLBAR (Light + Dark)
+   ========================================== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: oklch(0.96 0.01 75);
+}
+.dark ::-webkit-scrollbar-track {
+  background: oklch(0.22 0.02 60);
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(0.75 0.04 60);
+  border-radius: 5px;
+  transition: background 0.2s;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: oklch(0.38 0.03 60);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.6 0.06 55);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.5 0.05 55);
+}
+
+/* ==========================================
+   UTILITY CLASSES
+   ========================================== */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .gradient-warm {
+    background: linear-gradient(135deg, oklch(0.75 0.18 55), oklch(0.7 0.2 45));
+  }
+  
+  .gradient-warm-text {
+    background: linear-gradient(135deg, oklch(0.3 0.05 55), oklch(0.5 0.15 50));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .dark .gradient-warm-text {
+    background: linear-gradient(135deg, oklch(0.78 0.15 60), oklch(0.65 0.18 50));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}

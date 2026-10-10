@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "components": [
+    {
+      "component_id": "skills",
+      "weight": 40
+    },
+    {
+      "component_id": "experience",
+      "weight": 25
+    }
+  ]
+}

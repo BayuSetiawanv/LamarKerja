@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0",
+  "categories": [
+    {
+      "category_id": "it",
+      "category_name": "IT",
+      "skills": [
+        {
+          "skill_id": "py",
+          "name": "Python",
+          "aliases": [
+            "python3",
+            "py"
+          ],
+          "demand": "very_high"
+        }
+      ]
+    }
+  ]
+}

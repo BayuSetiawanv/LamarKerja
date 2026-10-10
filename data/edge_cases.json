@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "edge_cases": [
+    {
+      "case_id": "career_gap",
+      "name": "Career Gap",
+      "handling": "Do not penalize"
+    }
+  ]
+}

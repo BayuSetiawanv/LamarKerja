@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "cv_templates": [
+    {
+      "template_id": "ats_standard",
+      "name": "ATS Standard Single Column"
+    }
+  ]
+}

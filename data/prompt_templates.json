@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "prompts": {
+    "cv_extraction": {
+      "system": "Extract CV to JSON",
+      "user": "{cv_text}",
+      "response_format": "json_object"
+    }
+  }
+}
