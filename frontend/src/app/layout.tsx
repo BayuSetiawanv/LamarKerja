@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -20,6 +20,13 @@ export const metadata: Metadata = {
   keywords: [
     "CV", "ATS", "Cover Letter", "AI", "Lamaran Kerja", "Karir", "Resume Builder",
   ],
+};
+
+// 🌟 SAKLAR AJAIB RESPONSIVE (WAJIB UNTUK HP/TABLET)
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
