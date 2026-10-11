@@ -6,7 +6,7 @@ from app.config import settings
 logger = logging.getLogger(__name__)
 
 
-async def ask_ai(prompt: str, system_prompt: str = "", want_json: bool = True, max_retries: int = 2) -> str:
+async def ask_ai(prompt: str, system_prompt: str = "", want_json: bool = True, max_retries: int = 2, max_tokens: int = 4096) -> str:
     """
     AI Gateway dengan retry logic untuk handle transient errors (400/429/500).
     """
@@ -26,7 +26,7 @@ async def ask_ai(prompt: str, system_prompt: str = "", want_json: bool = True, m
             "model": settings.AI_MODEL,
             "messages": messages,
             "temperature": 0.3,
-            "max_tokens": 4096,
+            "max_tokens": max_tokens,
         }
         # Tidak pakai response_format karena beberapa model tidak support
         provider_name = f"Cloud ({settings.AI_MODEL})"
