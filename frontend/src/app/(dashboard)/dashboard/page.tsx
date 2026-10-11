@@ -1,6 +1,6 @@
 "use client";
 
-import { BackButton } from "@/components
+import { BackButton } from "@/components/back-button";
 import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
