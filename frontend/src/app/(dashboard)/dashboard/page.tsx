@@ -59,7 +59,6 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      <BackButton />
       {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold gradient-warm-text">Dashboard</h1>
