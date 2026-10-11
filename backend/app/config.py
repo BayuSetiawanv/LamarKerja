@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     OLLAMA_MODEL: str = "llama3"
 
         # Konfigurasi AI Gateway (local vs cloud)
-    AI_PROVIDER: str = "local"
+    AI_PROVIDER: str = "cloud"
     AI_BASE_URL: str = "https://api.groq.com/openai/v1"
     AI_API_KEY: str = Field(default="", env="AI_API_KEY")
     AI_MODEL: str = "llama-3.3-70b-versatile"
