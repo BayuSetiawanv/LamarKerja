@@ -1,5 +1,6 @@
 "use client";
 
+import { BackButton } from "@/components
 import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -58,6 +59,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6 sm:space-y-8">
+      <BackButton />
       {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold gradient-warm-text">Dashboard</h1>
