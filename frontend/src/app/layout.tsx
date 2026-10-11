@@ -22,11 +22,12 @@ export const metadata: Metadata = {
   ],
 };
 
-// 🌟 SAKLAR AJAIB RESPONSIVE (WAJIB UNTUK HP/TABLET)
+// 🌟 WAJIB: Viewport untuk semua perangkat
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  userScalable: true,
 };
 
 export default function RootLayout({
