@@ -40,14 +40,13 @@ export default function DashboardPage() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold gradient-warm-text">Dashboard</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold gradient-warm-text">Dashboard</h1>
           <p className="text-muted-foreground mt-1">Memuat...</p>
         </div>
       </div>
     );
   }
 
-  // 🔥 PERUBAHAN #1: Untuk ATS, bawa ID CV via URL query param
   const handlePickAndGo = (cv: CV, target: "ats" | "letter") => {
     setCurrentCV(cv);
     if (target === "ats") {
@@ -58,79 +57,82 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
+      {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold gradient-warm-text">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">
+        <h1 className="text-2xl sm:text-3xl font-bold gradient-warm-text">Dashboard</h1>
+        <p className="text-sm sm:text-base text-muted-foreground mt-1">
           Selamat datang kembali{user?.email ? `, ${user.email}` : ""}. Siap optimasi CV hari ini?
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      {/* Stats Grid: 1 kolom (HP), 2 kolom (Tablet), 3 kolom (Desktop) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <Card className="shadow-warm border-border/50">
-          <CardContent className="pt-6">
+          <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total CV</p>
-                <p className="text-3xl font-bold mt-1">{cvs.length}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Total CV</p>
+                <p className="text-2xl sm:text-3xl font-bold mt-1">{cvs.length}</p>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-linear-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-warm">
-                <FileText className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-warm">
+                <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="shadow-warm border-border/50">
-          <CardContent className="pt-6">
+          <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Skor ATS Terakhir</p>
-                <p className="text-3xl font-bold mt-1">
+                <p className="text-xs sm:text-sm text-muted-foreground">Skor ATS Terakhir</p>
+                <p className="text-2xl sm:text-3xl font-bold mt-1">
                   {latestScore ? latestScore.overall_score : "—"}
-                  {latestScore && <span className="text-base text-muted-foreground">/100</span>}
+                  {latestScore && <span className="text-sm text-muted-foreground">/100</span>}
                 </p>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-linear-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-warm">
-                <Target className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-warm">
+                <Target className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="shadow-warm border-border/50">
-          <CardContent className="pt-6">
+        <Card className="shadow-warm border-border/50 sm:col-span-2 lg:col-span-1">
+          <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Cover Letter</p>
-                <p className="text-3xl font-bold mt-1">
+                <p className="text-xs sm:text-sm text-muted-foreground">Cover Letter</p>
+                <p className="text-2xl sm:text-3xl font-bold mt-1">
                   {latestCoverLetter ? "Siap" : "Belum"}
                 </p>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-linear-to-br from-yellow-500 to-amber-600 flex items-center justify-center shadow-warm">
-                <PenLine className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-600 flex items-center justify-center shadow-warm">
+                <PenLine className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
+      {/* CV List Card */}
       <Card className="shadow-warm border-border/50">
-        <CardHeader>
-          <CardTitle>CV Terbaru Anda</CardTitle>
-          <CardDescription>
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-lg sm:text-xl">CV Terbaru Anda</CardTitle>
+          <CardDescription className="text-sm">
             Pilih CV dan langsung lanjut ke analisis skor ATS atau pembuatan cover letter
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 sm:p-6">
           {cvs.length === 0 ? (
-            <div className="text-center py-12">
-              <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
-              <h3 className="font-semibold mb-2">Belum ada CV terupload</h3>
-              <p className="text-sm text-muted-foreground mb-6">
+            <div className="text-center py-8 sm:py-12">
+              <Upload className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-4 text-muted-foreground/50" />
+              <h3 className="font-semibold text-base sm:text-lg mb-2">Belum ada CV terupload</h3>
+              <p className="text-sm text-muted-foreground mb-6 px-4">
                 Upload CV pertama Anda dan biarkan AI mulai bekerja
               </p>
-              <Button asChild className="gradient-warm text-white shadow-warm">
+              <Button asChild className="gradient-warm text-white shadow-warm w-full sm:w-auto">
                 <Link href="/dashboard/upload">
                   Upload CV Sekarang <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
@@ -142,16 +144,15 @@ export default function DashboardPage() {
                 <div
                   key={cv.id}
                   className={cn(
-                    "flex items-center justify-between gap-3 p-4 rounded-lg border transition-colors",
+                    "flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 sm:p-4 rounded-lg border transition-colors",
                     currentCV?.id === cv.id
                       ? "bg-accent/60 border-primary/50"
                       : "bg-accent/40 border-border/50 hover:border-primary/40"
                   )}
                 >
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <FileText className="w-5 h-5 text-primary shrink-0" />
-                    <div className="min-w-0">
-                      {/* 🔥 PERUBAHAN #2: Badge skor di samping nama file */}
+                  <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+                    <FileText className="w-5 h-5 text-primary shrink-0 mt-0.5 sm:mt-0" />
+                    <div className="min-w-0 flex-1">
                       <p className="font-medium text-sm truncate flex items-center gap-2 flex-wrap">
                         <span className="truncate">{cv.file_name}</span>
                         {cv.ats_result && cv.ats_score != null && (
@@ -160,32 +161,36 @@ export default function DashboardPage() {
                           </span>
                         )}
                       </p>
-                      <p className="text-xs text-muted-foreground">{formatDate(cv.created_at)}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{formatDate(cv.created_at)}</p>
                     </div>
                     {currentCV?.id === cv.id && (
-                      <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-success/15 text-success text-xs font-medium shrink-0">
+                      <span className="inline-flex sm:hidden items-center gap-1 px-2 py-0.5 rounded-full bg-success/15 text-success text-xs font-medium shrink-0 w-fit">
                         <CheckCircle2 className="w-3 h-3" /> Aktif
                       </span>
                     )}
                   </div>
-                  <div className="flex gap-2 shrink-0">
+                  
+                  {/* Buttons: Stack di HP, Side-by-side di desktop */}
+                  <div className="flex gap-2 shrink-0 w-full sm:w-auto">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handlePickAndGo(cv, "ats")}
-                      title="Hitung skor ATS untuk CV ini"
+                      title="Hitung skor ATS"
+                      className="flex-1 sm:flex-none justify-center sm:justify-start"
                     >
-                      <Target className="w-4 h-4" />
-                      <span className="hidden md:inline ml-1">Skor ATS</span>
+                      <Target className="w-4 h-4 sm:mr-1" />
+                      <span className="hidden sm:inline">Skor ATS</span>
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handlePickAndGo(cv, "letter")}
-                      title="Buat cover letter untuk CV ini"
+                      title="Buat cover letter"
+                      className="flex-1 sm:flex-none justify-center sm:justify-start"
                     >
-                      <PenLine className="w-4 h-4" />
-                      <span className="hidden md:inline ml-1">Cover Letter</span>
+                      <PenLine className="w-4 h-4 sm:mr-1" />
+                      <span className="hidden sm:inline">Cover Letter</span>
                     </Button>
                   </div>
                 </div>
