@@ -1,10 +1,10 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useEffect, useState } from "react"; // 🔥 TAMBAHKAN useState
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, Mail, Lock, User, Sparkles, AlertCircle } from "lucide-react";
+import { Loader2, Mail, Lock, User, Sparkles, AlertCircle, Eye, EyeOff } from "lucide-react"; // 🔥 TAMBAHKAN Eye, EyeOff
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,6 +26,9 @@ export default function RegisterPage() {
   const storeError = useAuthStore((s) => s.error);
   const clearError = useAuthStore((s) => s.clearError);
 
+  // 🔥 STATE UNTUK SHOW/HIDE PASSWORD
+  const [showPassword, setShowPassword] = useState(false);
+
   useEffect(() => {
     clearError();
   }, [clearError]);
@@ -41,7 +44,7 @@ export default function RegisterPage() {
   const onSubmit = async (values: RegisterFormValues) => {
     try {
       await registerUser(values.email, values.password, values.fullName);
-      router.push("/login");
+      router.replace("/login"); // 🔥 Gunakan replace agar tidak menumpuk history
     } catch {
       // Error ditampilkan dari store
     }
@@ -110,14 +113,29 @@ export default function RegisterPage() {
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"} // 🔥 UBAH TYPE DINAMIS
                 placeholder="Minimal 6 karakter"
-                className="pl-10"
+                className="pl-10 pr-10" // 🔥 TAMBAHKAN pr-10 AGAR TEKS TIDAK MENUMPUK IKON MATA
                 {...register("password", {
                   required: "Password wajib diisi",
                   minLength: { value: 6, message: "Password minimal 6 karakter" },
                 })}
               />
+              {/* 🔥 TOMBOL SHOW/HIDE PASSWORD */}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex={-1}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4 text-muted-foreground" />
+                ) : (
+                  <Eye className="h-4 w-4 text-muted-foreground" />
+                )}
+              </Button>
             </div>
             {errors.password && (
               <p className="text-sm text-destructive">{errors.password.message}</p>
