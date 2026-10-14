@@ -90,19 +90,12 @@ async def generate_cover_letter(
     raw_text: str = "",
     ats_result: Optional[dict] = None,
     language: str = "id",
-    # ===== Parameter baru =====
-    recipient_name: Optional[str] = None,      # contoh: "Mr. Bobi Putra Lesmana"
-    recipient_title: Optional[str] = None,     # contoh: "Human Resources Manager"
-    company_location: Optional[str] = None,    # contoh: "West Jakarta"
-    job_source: Optional[str] = None,          # contoh: "job portal", "LinkedIn"
-    attachments: Optional[List[str]] = None,   # contoh: ["Curriculum Vitae", "Transkrip Nilai"]
+    recipient_name: Optional[str] = None,
+    recipient_title: Optional[str] = None,
+    company_location: Optional[str] = None,
+    job_source: Optional[str] = None,
+    attachments: Optional[List[str]] = None,
 ) -> str:
-    """
-    Generate cover letter dengan struktur:
-    1. Informasi penerima  2. Tanggal  3. Salam pembuka
-    4. Isi (perkenalan, pengalaman & skill, penutup & harapan)  5. Salam penutup
-    """
-
     if language not in LANGUAGE_TEMPLATES:
         language = "id"
     tmpl = LANGUAGE_TEMPLATES[language]
@@ -118,7 +111,6 @@ async def generate_cover_letter(
     # ===== 2. Ringkasan CV =====
     cv_info_text = f"{'Name' if is_en else 'Nama'}: {name}\n\n"
 
-    # Pendidikan
     if isinstance(cv_data, dict):
         education = cv_data.get("education") or cv_data.get("pendidikan") or []
         if isinstance(education, dict):
@@ -135,7 +127,6 @@ async def generate_cover_letter(
                     cv_info_text += f"- {edu}\n"
             cv_info_text += "\n"
 
-    # Skills
     skills: list = []
     if isinstance(cv_data, dict):
         for k in ("skills", "hard_skills", "technical_skills", "core_skills", "competencies", "keahlian"):
@@ -145,7 +136,6 @@ async def generate_cover_letter(
     if skills:
         cv_info_text += f"Top Skills: {', '.join(str(s) for s in skills[:10])}\n\n"
 
-    # Pengalaman kerja / magang / organisasi
     if isinstance(cv_data, dict):
         experience = cv_data.get("experience") or cv_data.get("work_experience") or []
         if isinstance(experience, list) and experience:
@@ -197,7 +187,7 @@ async def generate_cover_letter(
     attach_list = [a for a in (attachments or ["Curriculum Vitae"]) if a and a.strip()]
     attach_info = f"{'ATTACHED DOCUMENTS' if is_en else 'DOKUMEN TERLAMPIR'}: {', '.join(attach_list)}\n"
 
-    # ===== 5. System prompt: 5 paragraf sesuai struktur =====
+    # ===== 5. System prompt =====
     lang_instr = tmpl["language_instruction"]
     p = tmpl["paragraph_labels"]
 
@@ -212,16 +202,16 @@ CONSTRAINTS:
 4. Tone: professional, polite, and warm.
 
 REQUIRED 5-PARAGRAPH STRUCTURE:
-- Paragraph 1 ({p[0]}): Express interest in the target position. Mention where the job was advertised if JOB SOURCE is provided. Briefly introduce who you are (education/status/background from CV).
+- Paragraph 1 ({p[0]}): Express interest in the target position. Mention where the job was advertised if JOB SOURCE is provided. Briefly introduce who you are.
 - Paragraph 2 ({p[1]}): Explain education, organizational experience, or skills that are relevant to the Job Description.
-- Paragraph 3 ({p[2]}): Explain the most relevant practical experience (work, internship, project) and what you learned or achieved. Use numbers if available in the CV.
-- Paragraph 4 ({p[3]}): State your belief that your background prepares you to contribute to the company. Mention the ATTACHED DOCUMENTS exactly as listed.
+- Paragraph 3 ({p[2]}): Explain the most relevant practical experience and what you learned or achieved. Use numbers if available.
+- Paragraph 4 ({p[3]}): State your belief that your background prepares you to contribute to the company. Mention the ATTACHED DOCUMENTS.
 - Paragraph 5 ({p[4]}): Thank the reader for their time and express hope for the opportunity to discuss your qualifications further.
 
 STRICT RULES:
 - DO NOT write recipient info, date, greeting, or signature (the system adds these).
 - DO NOT use bullet points.
-- DO NOT fabricate facts, documents, or experience that are not in the data.
+- DO NOT fabricate facts.
 - ONLY output the 5 paragraphs of the body."""
 
     jd_label = "JOB DESCRIPTION" if is_en else "LOWONGAN KERJA"
@@ -245,6 +235,7 @@ STRICT RULES:
 
     logger.info(f"📝 Mengirim request ke AI untuk generate cover letter (5 paragraf, {language})...")
 
+    # 🔥 PERBAIKAN SYNTAX DI SINI 🔥
     try:
         body = await ask_ai(
             prompt=user_prompt,
@@ -252,10 +243,9 @@ STRICT RULES:
             want_json=False,
             max_tokens=1200,
         )
-
-    # 🔥 PERBAIKAN 2: Validasi ketat. Jika kosong, coba 1x lagi sebelum fallback
-    if not 
-        body or not body.strip() or len(body.strip()) < 50:
+        
+        # Validasi harus BERADA DI DALAM blok try
+        if not body or not body.strip() or len(body.strip()) < 50:
             logger.warning("⚠️ AI mengembalikan body kosong/terlalu pendek. Melakukan 1x retry otomatis...")
             body = await ask_ai(
                 prompt=user_prompt + "\n(PENTING: Jangan kosong, tulis cover letter terbaik yang pernah anda buat)",
@@ -263,16 +253,14 @@ STRICT RULES:
                 want_json=False,
                 max_tokens=1200,
             )
-    else:
+            
         logger.info(f"✅ Body cover letter berhasil di-generate! (Panjang: {len(body)} karakter)")
         
     except Exception as e:
         logger.error(f"❌ Gagal generate cover letter: {type(e).__name__}: {e}")
         raise ValueError(f"Gagal generate cover letter: {str(e)}")
 
-    # ===== 6. Rakit surat final sesuai struktur =====
-
-    # (a) Informasi penerima
+    # ===== 6. Rakit surat final =====
     recipient_lines = []
     if recipient_name and recipient_name.strip():
         recipient_lines.append(recipient_name.strip())
@@ -283,11 +271,9 @@ STRICT RULES:
         recipient_lines.append(company_location.strip())
     recipient_block = "\n".join(recipient_lines)
 
-    # (b) Tanggal (rata kanan dilakukan di frontend / template PDF)
     city = location.split(",")[0].strip() if location else ""
     date_line = f"{city}, {_format_date(language)}" if city else _format_date(language)
 
-    # (c) Salam pembuka
     if recipient_name and recipient_name.strip():
         greeting = tmpl["greeting_named"].format(recipient=recipient_name.strip())
     elif company_name:
@@ -295,7 +281,6 @@ STRICT RULES:
     else:
         greeting = tmpl["greeting_generic"]
 
-    # (d) Salam penutup + nama (+ kontak)
     signature = f"{tmpl['closing']}\n\n\n{name}"
     contact_bits = [b for b in (phone, email) if b]
     if contact_bits:
