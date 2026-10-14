@@ -1,10 +1,10 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react"; // 🔥 TAMBAHKAN useState
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, Mail, Lock, User, Sparkles, AlertCircle, Eye, EyeOff } from "lucide-react"; // 🔥 TAMBAHKAN Eye, EyeOff
+import { Loader2, Mail, Lock, User, Sparkles, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,9 +25,19 @@ export default function RegisterPage() {
   const isLoading = useAuthStore((s) => s.isLoading);
   const storeError = useAuthStore((s) => s.error);
   const clearError = useAuthStore((s) => s.clearError);
+  
+  // 🔥 AMBIL TOKEN & HYDRATION
+  const token = useAuthStore((s) => s.token);
+  const isHydrated = useAuthStore((s) => s.isHydrated);
 
-  // 🔥 STATE UNTUK SHOW/HIDE PASSWORD
   const [showPassword, setShowPassword] = useState(false);
+
+  // 🔥 🔥 🔥 SATPAM (GATEKEEPER) 🔥 🔥 🔥
+  useEffect(() => {
+    if (isHydrated && token) {
+      router.replace("/dashboard");
+    }
+  }, [isHydrated, token, router]);
 
   useEffect(() => {
     clearError();
@@ -44,11 +54,20 @@ export default function RegisterPage() {
   const onSubmit = async (values: RegisterFormValues) => {
     try {
       await registerUser(values.email, values.password, values.fullName);
-      router.replace("/login"); // 🔥 Gunakan replace agar tidak menumpuk history
+      router.replace("/login");
     } catch {
       // Error ditampilkan dari store
     }
   };
+
+  // 🔥 Tampilkan loading sementara store mengecek status
+  if (!isHydrated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <Card className="w-full max-w-md shadow-warm-lg border-border/50">
@@ -82,9 +101,7 @@ export default function RegisterPage() {
                 {...register("fullName", { required: "Nama wajib diisi" })}
               />
             </div>
-            {errors.fullName && (
-              <p className="text-sm text-destructive">{errors.fullName.message}</p>
-            )}
+            {errors.fullName && <p className="text-sm text-destructive">{errors.fullName.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -102,9 +119,7 @@ export default function RegisterPage() {
                 })}
               />
             </div>
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
-            )}
+            {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -113,15 +128,14 @@ export default function RegisterPage() {
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 id="password"
-                type={showPassword ? "text" : "password"} // 🔥 UBAH TYPE DINAMIS
+                type={showPassword ? "text" : "password"}
                 placeholder="Minimal 6 karakter"
-                className="pl-10 pr-10" // 🔥 TAMBAHKAN pr-10 AGAR TEKS TIDAK MENUMPUK IKON MATA
+                className="pl-10 pr-10"
                 {...register("password", {
                   required: "Password wajib diisi",
                   minLength: { value: 6, message: "Password minimal 6 karakter" },
                 })}
               />
-              {/* 🔥 TOMBOL SHOW/HIDE PASSWORD */}
               <Button
                 type="button"
                 variant="ghost"
@@ -130,16 +144,10 @@ export default function RegisterPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 tabIndex={-1}
               >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-muted-foreground" />
-                ) : (
-                  <Eye className="h-4 w-4 text-muted-foreground" />
-                )}
+                {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
               </Button>
             </div>
-            {errors.password && (
-              <p className="text-sm text-destructive">{errors.password.message}</p>
-            )}
+            {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
           </div>
 
           <Button
@@ -148,13 +156,8 @@ export default function RegisterPage() {
             className="w-full gradient-warm text-white shadow-warm hover:shadow-warm-lg hover:opacity-95 h-11"
           >
             {isLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Mendaftarkan...
-              </>
-            ) : (
-              "Daftar Sekarang"
-            )}
+              <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Mendaftarkan...</>
+            ) : "Daftar Sekarang"}
           </Button>
         </form>
 
