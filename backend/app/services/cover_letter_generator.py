@@ -250,9 +250,22 @@ STRICT RULES:
             prompt=user_prompt,
             system_prompt=system_prompt,
             want_json=False,
-            max_tokens=800,
+            max_tokens=1200,
         )
-        logger.info(f"✅ Body cover letter ({language}) berhasil di-generate!")
+
+    # 🔥 PERBAIKAN 2: Validasi ketat. Jika kosong, coba 1x lagi sebelum fallback
+    if not 
+        body or not body.strip() or len(body.strip()) < 50:
+            logger.warning("⚠️ AI mengembalikan body kosong/terlalu pendek. Melakukan 1x retry otomatis...")
+            body = await ask_ai(
+                prompt=user_prompt + "\n(PENTING: Jangan kosong, tulis cover letter terbaik yang pernah anda buat)",
+                system_prompt=system_prompt,
+                want_json=False,
+                max_tokens=1200,
+            )
+    else:
+        logger.info(f"✅ Body cover letter berhasil di-generate! (Panjang: {len(body)} karakter)")
+        
     except Exception as e:
         logger.error(f"❌ Gagal generate cover letter: {type(e).__name__}: {e}")
         raise ValueError(f"Gagal generate cover letter: {str(e)}")
