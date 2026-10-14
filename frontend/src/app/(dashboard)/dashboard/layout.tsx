@@ -164,7 +164,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
 
       {/* ===== DESKTOP LAYOUT (≥ 1024px) ===== */}
-      <div className="hidden lg:block">
+      <div className="hidden lg:block bg-background min-h-screen">
         {/* Desktop Sidebar (Static) */}
         <aside className="fixed top-0 left-0 z-30 h-full w-64 border-r border-border/50 bg-card">
           <div className="h-16 flex items-center px-6 border-b border-border/50">
